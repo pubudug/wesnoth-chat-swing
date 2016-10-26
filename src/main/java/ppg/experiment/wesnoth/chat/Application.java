@@ -55,9 +55,9 @@ public class Application {
         JTextAreaMessageMessageHandler messageHandler = new JTextAreaMessageMessageHandler(
                 historyTextArea);
 
-        WesnothChatClient client = new WesnothChatClient(versionRequestHandler,
-                mustLoginHandler, userHandler, gameListDiffHandler,
-                whisperHandler, messageHandler);
+        WesnothChatClient client = new WesnothChatClient("localhost", 15000,
+                versionRequestHandler, mustLoginHandler, userHandler,
+                gameListDiffHandler, whisperHandler, messageHandler);
 
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
