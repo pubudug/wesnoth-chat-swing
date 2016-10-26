@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.border.BevelBorder;
 
+import ppg.experiment.wesnoth.chat.handlers.FixedVersionRequestHandler;
 import ppg.experiment.wesnoth.chat.handlers.JListGameListDiffMessageHandler;
 import ppg.experiment.wesnoth.chat.handlers.JListUserMessageHandler;
 import ppg.experiment.wesnoth.chat.handlers.JTextAreaMessageMessageHandler;
@@ -28,11 +29,11 @@ public class Application {
 
     public Application() {
 
-        VersionRequestHandler versionRequestHandler = getVersionRequestHandler();
         final JFrame frame = new JFrame("Wesnoth Chat");
         DefaultListModel<String> userListModel = new DefaultListModel<String>();
         JTextArea historyTextArea = new JTextArea();
 
+        VersionRequestHandler versionRequestHandler = new FixedVersionRequestHandler();
         MustLoginRequestHandler mustLoginHandler = new PasswordDialogMustloginRequestHandler(
                 frame);
         UserMessageHandler userHandler = new JListUserMessageHandler(
@@ -49,7 +50,6 @@ public class Application {
         WesnothChatClient client = new WesnothChatClient(versionRequestHandler,
                 mustLoginHandler, userHandler, gameListDiffHandler,
                 whisperHandler, messageHandler);
-        new Thread(client).start();
 
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,17 +68,8 @@ public class Application {
 
         frame.setMinimumSize(new Dimension(550, 550));
 
+        new Thread(client).start();
         frame.setVisible(true);
-    }
-
-    private VersionRequestHandler getVersionRequestHandler() {
-        VersionRequestHandler versionRequestHandler = new VersionRequestHandler() {
-            @Override
-            String getVersion() {
-                return "1.12.6";
-            }
-        };
-        return versionRequestHandler;
     }
 
     private JScrollPane getUserListPanel(ListModel<String> userListModel) {

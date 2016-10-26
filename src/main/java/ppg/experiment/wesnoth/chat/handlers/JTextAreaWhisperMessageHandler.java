@@ -15,7 +15,7 @@ public class JTextAreaWhisperMessageHandler extends WhisperMessageHandler {
 
     @Override
     public void showWhisperedMessage(String sender, String message) {
-        textArea.append(sender + "(whisper) : " + message + "\n");
+        textArea.append(sender + "(whispered) : " + message + "\n");
     }
 
 }
