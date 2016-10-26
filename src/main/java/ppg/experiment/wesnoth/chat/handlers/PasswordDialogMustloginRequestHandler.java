@@ -12,9 +12,9 @@ public class PasswordDialogMustloginRequestHandler
     public PasswordDialogMustloginRequestHandler(JFrame frame) {
         this.frame = frame;
     }
-    
+
     @Override
     public String getUserName() {
-        return JOptionPane.showInputDialog(frame, "Enter your nick");
+        return JOptionPane.showInputDialog(frame, "Enter your nickname");
     }
 }

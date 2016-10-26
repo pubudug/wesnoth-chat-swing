@@ -17,7 +17,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ListModel;
 import javax.swing.border.BevelBorder;
 
 import ppg.experiment.wesnoth.chat.handlers.FixedVersionRequestHandler;
@@ -26,6 +25,7 @@ import ppg.experiment.wesnoth.chat.handlers.JListUserMessageHandler;
 import ppg.experiment.wesnoth.chat.handlers.JTextAreaMessageMessageHandler;
 import ppg.experiment.wesnoth.chat.handlers.JTextAreaWhisperMessageHandler;
 import ppg.experiment.wesnoth.chat.handlers.PasswordDialogMustloginRequestHandler;
+import ppg.experiment.wesnoth.chat.handlers.SwingErrorHandler;
 
 public class Application {
 
@@ -55,9 +55,12 @@ public class Application {
         JTextAreaMessageMessageHandler messageHandler = new JTextAreaMessageMessageHandler(
                 historyTextArea);
 
+        SwingErrorHandler errorHandler = new SwingErrorHandler(frame);
+
         WesnothChatClient client = new WesnothChatClient("localhost", 15000,
                 versionRequestHandler, mustLoginHandler, userHandler,
-                gameListDiffHandler, whisperHandler, messageHandler);
+                gameListDiffHandler, whisperHandler, messageHandler,
+                errorHandler);
 
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
