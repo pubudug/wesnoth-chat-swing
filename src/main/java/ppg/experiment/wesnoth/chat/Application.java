@@ -39,19 +39,19 @@ public class Application {
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(getUserListPanel(),
-                new GridBagConstraints(0, 0, 1, 5, 1, 1,
+                new GridBagConstraints(0, 0, 1, 5, .2, 1,
                         GridBagConstraints.WEST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
         frame.getContentPane().add(getHistoryArea(),
-                new GridBagConstraints(1, 0, 3, 4, 1, 1,
+                new GridBagConstraints(1, 0, 4, 4, .8, .8,
                         GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
         frame.getContentPane().add(getChatArea(),
-                new GridBagConstraints(1, 4, 3, 1, 1, 1,
+                new GridBagConstraints(1, 4, 4, 1, .8, .2,
                         GridBagConstraints.SOUTHEAST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
 
-        frame.setMinimumSize(new Dimension(440, 550));
+        frame.setMinimumSize(new Dimension(550, 550));
 
         frame.setVisible(true);
     }
@@ -88,7 +88,7 @@ public class Application {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(300, 400));
+        scrollPane.setPreferredSize(new Dimension(400, 400));
         return scrollPane;
     }
 
@@ -100,7 +100,7 @@ public class Application {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(300, 100));
+        scrollPane.setPreferredSize(new Dimension(400, 100));
         return scrollPane;
     }
 }
