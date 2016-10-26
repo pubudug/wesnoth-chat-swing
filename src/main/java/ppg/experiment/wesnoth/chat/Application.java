@@ -1,14 +1,20 @@
 package ppg.experiment.wesnoth.chat;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListModel;
@@ -31,7 +37,9 @@ public class Application {
 
         final JFrame frame = new JFrame("Wesnoth Chat");
         DefaultListModel<String> userListModel = new DefaultListModel<String>();
+        JList<String> userList = new JList<String>(userListModel);
         JTextArea historyTextArea = new JTextArea();
+        JTextArea chatTextArea = new JTextArea();
 
         VersionRequestHandler versionRequestHandler = new FixedVersionRequestHandler();
         MustLoginRequestHandler mustLoginHandler = new PasswordDialogMustloginRequestHandler(
@@ -53,28 +61,68 @@ public class Application {
 
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(getUserListPanel(userListModel),
-                new GridBagConstraints(0, 0, 1, 5, .2, 1,
+        frame.getContentPane().add(getUserListPanel(userList),
+                new GridBagConstraints(0, 0, 1, 6, .2, 1,
                         GridBagConstraints.WEST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
         frame.getContentPane().add(getHistoryArea(historyTextArea),
                 new GridBagConstraints(1, 0, 4, 4, .8, .8,
                         GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
-        frame.getContentPane().add(getChatArea(),
+        frame.getContentPane().add(getChatArea(chatTextArea),
                 new GridBagConstraints(1, 4, 4, 1, .8, .2,
                         GridBagConstraints.SOUTHEAST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
 
-        frame.setMinimumSize(new Dimension(550, 550));
+        frame.getContentPane().add(
+                getButtonsPanel(userList, chatTextArea, client),
+                new GridBagConstraints(1, 5, 4, 1, 0, 0,
+                        GridBagConstraints.SOUTHEAST, GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0), 0, 0));
+
+        frame.setMinimumSize(new Dimension(600, 600));
 
         new Thread(client).start();
         frame.setVisible(true);
     }
 
-    private JScrollPane getUserListPanel(ListModel<String> userListModel) {
-        JScrollPane scrollPane = new JScrollPane(
-                new JList<String>(userListModel));
+    private Component getButtonsPanel(final JList<String> userList,
+            final JTextArea chatTextArea, final WesnothChatClient client) {
+        JPanel buttons = new JPanel();
+        buttons.setPreferredSize(new Dimension(300, 40));
+
+        JButton clearListSelectionButton = new JButton("Clear Selection");
+        clearListSelectionButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                userList.clearSelection();
+            }
+        });
+        buttons.add(clearListSelectionButton);
+
+        JButton sendButton = new JButton("Send");
+        sendButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                List<String> selectedValuesList = userList
+                        .getSelectedValuesList();
+                if (selectedValuesList.isEmpty()) {
+                    client.sendMessage(chatTextArea.getText());
+                    chatTextArea.setText("");
+                } else {
+                    for (String nick : selectedValuesList) {
+                        client.whisper(nick, chatTextArea.getText());
+                        chatTextArea.setText("");
+                    }
+                }
+            }
+        });
+        buttons.add(sendButton);
+        return buttons;
+    }
+
+    private JScrollPane getUserListPanel(JList<String> list) {
+        JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(
@@ -97,8 +145,7 @@ public class Application {
         return scrollPane;
     }
 
-    private JScrollPane getChatArea() {
-        JTextArea textArea = new JTextArea();
+    private JScrollPane getChatArea(JTextArea textArea) {
         textArea.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(
