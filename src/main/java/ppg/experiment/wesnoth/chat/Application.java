@@ -12,7 +12,14 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListModel;
 import javax.swing.border.BevelBorder;
+
+import ppg.experiment.wesnoth.chat.handlers.JListGameListDiffMessageHandler;
+import ppg.experiment.wesnoth.chat.handlers.JListUserMessageHandler;
+import ppg.experiment.wesnoth.chat.handlers.JTextAreaMessageMessageHandler;
+import ppg.experiment.wesnoth.chat.handlers.JTextAreaWhisperMessageHandler;
+import ppg.experiment.wesnoth.chat.handlers.PasswordDialogMustloginRequestHandler;
 
 public class Application {
 
@@ -24,25 +31,34 @@ public class Application {
 
         VersionRequestHandler versionRequestHandler = getVersionRequestHandler();
         final JFrame frame = new JFrame("Wesnoth Chat");
+        DefaultListModel<String> userListModel = new DefaultListModel<String>();
+        JTextArea historyTextArea = new JTextArea();
 
-        MustLoginRequestHandler mustLoginRequestHandler = new MustLoginRequestHandler() {
+        MustLoginRequestHandler mustLoginRequestHandler = new PasswordDialogMustloginRequestHandler(
+                frame);
+        UserMessageHandler userMessageHandler = new JListUserMessageHandler(
+                userListModel);
+        GameListDiffMessageHandler gameListDiffMessageHandler = new JListGameListDiffMessageHandler(
+                userListModel);
 
-            @Override
-            public String getUserName() {
-                return JOptionPane.showInputDialog(frame, "Enter your nick");
-            }
-        };
+        JTextAreaWhisperMessageHandler whisper = new JTextAreaWhisperMessageHandler(
+                historyTextArea);
+
+        JTextAreaMessageMessageHandler message = new JTextAreaMessageMessageHandler(
+                historyTextArea);
+
         WesnothChatClient client = new WesnothChatClient(versionRequestHandler,
-                mustLoginRequestHandler);
+                mustLoginRequestHandler, userMessageHandler,
+                gameListDiffMessageHandler, whisper, message);
         new Thread(client).start();
 
         frame.getContentPane().setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(getUserListPanel(),
+        frame.getContentPane().add(getUserListPanel(userListModel),
                 new GridBagConstraints(0, 0, 1, 5, .2, 1,
                         GridBagConstraints.WEST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
-        frame.getContentPane().add(getHistoryArea(),
+        frame.getContentPane().add(getHistoryArea(historyTextArea),
                 new GridBagConstraints(1, 0, 4, 4, .8, .8,
                         GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH,
                         new Insets(0, 0, 0, 0), 0, 0));
@@ -66,9 +82,9 @@ public class Application {
         return versionRequestHandler;
     }
 
-    private JScrollPane getUserListPanel() {
-        DefaultListModel<String> dataModel = new DefaultListModel<String>();
-        JScrollPane scrollPane = new JScrollPane(new JList<String>(dataModel));
+    private JScrollPane getUserListPanel(ListModel<String> userListModel) {
+        JScrollPane scrollPane = new JScrollPane(
+                new JList<String>(userListModel));
         scrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(
@@ -79,11 +95,10 @@ public class Application {
         return scrollPane;
     }
 
-    private JScrollPane getHistoryArea() {
-        JTextArea textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setLineWrap(true);
-        JScrollPane scrollPane = new JScrollPane(textArea);
+    private JScrollPane getHistoryArea(JTextArea historyTextArea) {
+        historyTextArea.setEditable(false);
+        historyTextArea.setLineWrap(true);
+        JScrollPane scrollPane = new JScrollPane(historyTextArea);
         scrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(
