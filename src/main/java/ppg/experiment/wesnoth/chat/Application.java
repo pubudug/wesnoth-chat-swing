@@ -9,7 +9,6 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListModel;
@@ -34,22 +33,22 @@ public class Application {
         DefaultListModel<String> userListModel = new DefaultListModel<String>();
         JTextArea historyTextArea = new JTextArea();
 
-        MustLoginRequestHandler mustLoginRequestHandler = new PasswordDialogMustloginRequestHandler(
+        MustLoginRequestHandler mustLoginHandler = new PasswordDialogMustloginRequestHandler(
                 frame);
-        UserMessageHandler userMessageHandler = new JListUserMessageHandler(
+        UserMessageHandler userHandler = new JListUserMessageHandler(
                 userListModel);
-        GameListDiffMessageHandler gameListDiffMessageHandler = new JListGameListDiffMessageHandler(
+        GameListDiffMessageHandler gameListDiffHandler = new JListGameListDiffMessageHandler(
                 userListModel);
 
-        JTextAreaWhisperMessageHandler whisper = new JTextAreaWhisperMessageHandler(
+        JTextAreaWhisperMessageHandler whisperHandler = new JTextAreaWhisperMessageHandler(
                 historyTextArea);
 
-        JTextAreaMessageMessageHandler message = new JTextAreaMessageMessageHandler(
+        JTextAreaMessageMessageHandler messageHandler = new JTextAreaMessageMessageHandler(
                 historyTextArea);
 
         WesnothChatClient client = new WesnothChatClient(versionRequestHandler,
-                mustLoginRequestHandler, userMessageHandler,
-                gameListDiffMessageHandler, whisper, message);
+                mustLoginHandler, userHandler, gameListDiffHandler,
+                whisperHandler, messageHandler);
         new Thread(client).start();
 
         frame.getContentPane().setLayout(new GridBagLayout());
