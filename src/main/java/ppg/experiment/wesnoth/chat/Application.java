@@ -1,13 +1,15 @@
 package ppg.experiment.wesnoth.chat;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
@@ -19,31 +21,62 @@ public class Application {
     }
 
     public Application() {
-        JFrame frame = new JFrame("Wesnoth Chat");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(getUserListPanel(), BorderLayout.WEST);
-        frame.getContentPane().add(getHistoryArea(), BorderLayout.CENTER);
-        frame.getContentPane().add(getChatArea(), BorderLayout.SOUTH);
 
-        frame.setSize(new Dimension(400, 400));
+        VersionRequestHandler versionRequestHandler = getVersionRequestHandler();
+        final JFrame frame = new JFrame("Wesnoth Chat");
+
+        MustLoginRequestHandler mustLoginRequestHandler = new MustLoginRequestHandler() {
+
+            @Override
+            public String getUserName() {
+                return JOptionPane.showInputDialog(frame, "Enter your nick");
+            }
+        };
+        WesnothChatClient client = new WesnothChatClient(versionRequestHandler,
+                mustLoginRequestHandler);
+        new Thread(client).start();
+
+        frame.getContentPane().setLayout(new GridBagLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(getUserListPanel(),
+                new GridBagConstraints(0, 0, 1, 5, 1, 1,
+                        GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+        frame.getContentPane().add(getHistoryArea(),
+                new GridBagConstraints(1, 0, 3, 4, 1, 1,
+                        GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+        frame.getContentPane().add(getChatArea(),
+                new GridBagConstraints(1, 4, 3, 1, 1, 1,
+                        GridBagConstraints.SOUTHEAST, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+
+        frame.setMinimumSize(new Dimension(440, 550));
+
         frame.setVisible(true);
     }
 
-    private JPanel getUserListPanel() {
+    private VersionRequestHandler getVersionRequestHandler() {
+        VersionRequestHandler versionRequestHandler = new VersionRequestHandler() {
+            @Override
+            String getVersion() {
+                return "1.12.6";
+            }
+        };
+        return versionRequestHandler;
+    }
 
-        JPanel p = new JPanel(new BorderLayout());
-
+    private JScrollPane getUserListPanel() {
         DefaultListModel<String> dataModel = new DefaultListModel<String>();
-        p.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-        dataModel.addElement("user1");
-        dataModel.addElement("user2");
         JScrollPane scrollPane = new JScrollPane(new JList<String>(dataModel));
         scrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        p.add(scrollPane, BorderLayout.CENTER);
-        return p;
+        scrollPane
+                .setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        scrollPane.setPreferredSize(new Dimension(100, 500));
+        return scrollPane;
     }
 
     private JScrollPane getHistoryArea() {
@@ -55,17 +88,19 @@ public class Application {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(300, 400));
         return scrollPane;
     }
 
     private JScrollPane getChatArea() {
-        JTextArea histtoryTextArea = new JTextArea();
-        histtoryTextArea.setLineWrap(true);
-        JScrollPane historyScrollPane = new JScrollPane(histtoryTextArea);
-        historyScrollPane.setVerticalScrollBarPolicy(
+        JTextArea textArea = new JTextArea();
+        textArea.setLineWrap(true);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        historyScrollPane.setHorizontalScrollBarPolicy(
+        scrollPane.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        return historyScrollPane;
+        scrollPane.setPreferredSize(new Dimension(300, 100));
+        return scrollPane;
     }
 }
