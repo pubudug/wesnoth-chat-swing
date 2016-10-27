@@ -1,6 +1,6 @@
 package ppg.experiment.wesnoth.chat.handlers;
 
-import ppg.experiment.wesnoth.chat.VersionRequestHandler;
+import ppg.experiment.wesnoth.chat.handler.VersionRequestHandler;
 
 public class FixedVersionRequestHandler extends VersionRequestHandler {
     @Override

@@ -2,7 +2,7 @@ package ppg.experiment.wesnoth.chat.handlers;
 
 import javax.swing.DefaultListModel;
 
-import ppg.experiment.wesnoth.chat.GameListDiffMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.GameListDiffMessageHandler;
 
 public class JListGameListDiffMessageHandler
         extends GameListDiffMessageHandler {

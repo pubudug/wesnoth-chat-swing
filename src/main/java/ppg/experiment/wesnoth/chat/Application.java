@@ -19,6 +19,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 
+import ppg.experiment.wesnoth.chat.handler.GameListDiffMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.MustLoginRequestHandler;
+import ppg.experiment.wesnoth.chat.handler.UserMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.VersionRequestHandler;
 import ppg.experiment.wesnoth.chat.handlers.FixedVersionRequestHandler;
 import ppg.experiment.wesnoth.chat.handlers.JListGameListDiffMessageHandler;
 import ppg.experiment.wesnoth.chat.handlers.JListUserMessageHandler;
@@ -57,7 +61,7 @@ public class Application {
 
         SwingErrorHandler errorHandler = new SwingErrorHandler(frame);
 
-        WesnothChatClient client = new WesnothChatClient("localhost", 15000,
+        WesnothChatClient client = new WesnothChatClient("server.wesnoth.org", 15000,
                 versionRequestHandler, mustLoginHandler, userHandler,
                 gameListDiffHandler, whisperHandler, messageHandler,
                 errorHandler);

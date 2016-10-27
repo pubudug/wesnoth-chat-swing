@@ -2,7 +2,7 @@ package ppg.experiment.wesnoth.chat.handlers;
 
 import javax.swing.DefaultListModel;
 
-import ppg.experiment.wesnoth.chat.UserMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.UserMessageHandler;
 
 public class JListUserMessageHandler extends UserMessageHandler {
 

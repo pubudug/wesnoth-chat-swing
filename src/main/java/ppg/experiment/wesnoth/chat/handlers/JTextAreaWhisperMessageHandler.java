@@ -2,7 +2,7 @@ package ppg.experiment.wesnoth.chat.handlers;
 
 import javax.swing.JTextArea;
 
-import ppg.experiment.wesnoth.chat.WhisperMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.WhisperMessageHandler;
 
 public class JTextAreaWhisperMessageHandler extends WhisperMessageHandler {
 

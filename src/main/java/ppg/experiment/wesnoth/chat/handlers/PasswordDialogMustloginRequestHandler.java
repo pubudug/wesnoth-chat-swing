@@ -3,7 +3,7 @@ package ppg.experiment.wesnoth.chat.handlers;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import ppg.experiment.wesnoth.chat.MustLoginRequestHandler;
+import ppg.experiment.wesnoth.chat.handler.MustLoginRequestHandler;
 
 public class PasswordDialogMustloginRequestHandler
         extends MustLoginRequestHandler {
